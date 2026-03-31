@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepClone AI - Built-in Logic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .chat-container { height: calc(100vh - 160px); }
+        .thinking { font-style: italic; color: #6b7280; border-left: 2px solid #e5e7eb; padding-left: 1rem; margin-bottom: 1rem; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <header class="bg-white border-b p-4 sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <h1 class="text-xl font-bold text-blue-600 flex items-center gap-2">
+                DeepClone <span class="text-[10px] bg-blue-100 px-2 py-0.5 rounded text-blue-800">BUILT-IN ENGINE</span>
+            </h1>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto p-4">
+        <div id="chat-box" class="chat-container overflow-y-auto space-y-6 pb-10">
+            <!-- Greeting -->
+            <div class="flex flex-col">
+                <div class="font-bold text-sm mb-1 text-gray-600 text-left">Assistant</div>
+                <div class="bg-white border rounded-2xl p-4 shadow-sm max-w-[90%] text-left">
+                    Hello! I am running entirely on built-in logic. No APIs or external models required. How can I help?
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="fixed bottom-0 w-full bg-white border-t p-4">
+        <div class="max-w-4xl mx-auto relative">
+            <textarea id="user-input" rows="1" class="w-full border rounded-2xl pl-4 pr-12 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" placeholder="Try: 'Hello', 'Who are you?', or 'Help'"></textarea>
+            <button id="send-btn" class="absolute right-3 top-3 bg-blue-600 text-white p-1.5 rounded-xl hover:bg-blue-700 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" /></svg>
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        const chatBox = document.getElementById('chat-box');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        // THE BUILT-IN "MODEL" (Rule-based Logic)
+        const miniModel = (input) => {
+            const text = input.toLowerCase();
+            if (text.includes("hello") || text.includes("hi")) return "Greetings! How can I assist you today?";
+            if (text.includes("who are you")) return "I am a DeepClone instance running on purely local JavaScript logic. No external servers involved!";
+            if (text.includes("deepseek")) return "DeepSeek is a powerful AI model. I am a lightweight clone of its interface!";
+            if (text.includes("help") || text.includes("do")) return "I can answer basic questions, explain how I work, or just chat with you!";
+            if (text.includes("time")) return "It is currently " + new Date().toLocaleTimeString();
+            if (text.includes("weather")) return "I don't have internet access to check the weather, but it looks like clear code from here!";
+            
+            return "That's interesting! Since I'm a mini-model, I'm still learning. Try asking who I am or for the time.";
+        };
+
+        function addMessage(role, text, isThinking = false) {
+            const wrapper = document.createElement('div');
+            wrapper.className = `flex flex-col animate-in fade-in duration-300 ${isThinking ? 'thinking-wrapper' : ''}`;
+            const label = document.createElement('div');
+            label.className = `font-bold text-sm mb-1 text-gray-600 ${role === 'user' ? 'text-right' : 'text-left'}`;
+            label.innerText = role === 'user' ? 'You' : 'Assistant';
+            const content = document.createElement('div');
+            content.className = isThinking ? 'thinking' : `rounded-2xl p-4 shadow-sm max-w-[90%] ${role === 'user' ? 'bg-blue-600 text-white self-end' : 'bg-white border text-left'}`;
+            content.innerText = text;
+            wrapper.appendChild(label);
+            wrapper.appendChild(content);
+            chatBox.appendChild(wrapper);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function handleSend() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            addMessage('user', text);
+            userInput.value = '';
+
+            // Show Thinking State
+            addMessage('assistant', 'DeepClone is processing...', true);
+            
+            // Artificial delay to simulate "Thinking"
+            setTimeout(() => {
+                const thinkingMsg = document.querySelector('.thinking-wrapper');
+                if (thinkingMsg) thinkingMsg.remove();
+                
+                const response = miniModel(text);
+                addMessage('assistant', response);
+            }, 800);
+        }
+
+        sendBtn.addEventListener('click', handleSend);
+        userInput.addEventListener('keypress', (e) => { 
+            if(e.key === 'Enter' && !e.shiftKey) { 
+                e.preventDefault(); 
+                handleSend(); 
+            } 
+        });
+    </script>
+</body>
+</html>
